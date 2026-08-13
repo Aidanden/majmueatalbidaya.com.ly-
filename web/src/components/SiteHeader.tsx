@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const nav = [
+  { href: "#products", label: "المنتجات" },
   { href: "#brands", label: "الماركات" },
   { href: "#about", label: "من نحن" },
   { href: "#contact", label: "تواصل" },
@@ -12,6 +13,7 @@ const nav = [
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const solid = scrolled || open;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -37,16 +39,16 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-40 transition-[background,box-shadow,border-color] duration-300 ${
-        scrolled || open
-          ? "border-b border-line bg-white/95 shadow-[0_8px_30px_-18px_rgba(26,63,117,0.35)] backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
+      className={`fixed inset-x-0 top-0 z-40 transition-[background,box-shadow,border-color,color] duration-300 ${
+        solid
+          ? "border-b border-line bg-white/95 text-brand-deep shadow-[0_8px_30px_-18px_rgba(26,63,117,0.35)] backdrop-blur-md"
+          : "border-b border-transparent bg-transparent text-white"
       }`}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-8 sm:py-4">
         <a
           href="#top"
-          className="group flex min-w-0 items-center gap-2 text-brand-deep"
+          className="group flex min-w-0 items-center gap-2"
           onClick={() => setOpen(false)}
         >
           <Image
@@ -54,7 +56,7 @@ export function SiteHeader() {
             alt="شعار مجموعة البداية"
             width={40}
             height={36}
-            className="h-8 w-auto shrink-0 sm:h-9"
+            className={`h-8 w-auto shrink-0 sm:h-9 ${solid ? "" : "brightness-0 invert"}`}
             priority
           />
           <span className="font-display truncate text-[0.95rem] font-bold tracking-tight sm:text-lg">
@@ -62,12 +64,20 @@ export function SiteHeader() {
           </span>
         </a>
 
-        <nav className="hidden items-center gap-7 text-sm font-medium text-ink/70 md:flex">
+        <nav
+          className={`hidden items-center gap-7 text-sm font-medium md:flex ${
+            solid ? "text-ink/70" : "text-white/80"
+          }`}
+        >
           {nav.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="relative transition-colors duration-300 hover:text-brand-deep after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-center after:scale-x-0 after:bg-brand after:transition-transform after:duration-300 hover:after:scale-x-100"
+              className={`relative transition-colors duration-300 after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-center after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+                solid
+                  ? "hover:text-brand-deep after:bg-brand"
+                  : "hover:text-white after:bg-white"
+              }`}
             >
               {item.label}
             </a>
@@ -77,14 +87,22 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <a
             href="tel:+218914497272"
-            className="hidden rounded-md bg-brand px-3.5 py-2 text-sm font-semibold text-white transition duration-300 hover:bg-brand-deep sm:inline-flex"
+            className={`hidden rounded-md px-3.5 py-2 text-sm font-semibold transition duration-300 sm:inline-flex ${
+              solid
+                ? "bg-brand text-white hover:bg-brand-deep"
+                : "bg-white/15 text-white ring-1 ring-white/30 hover:bg-white/25"
+            }`}
           >
             اتصل الآن
           </a>
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-brand-deep ring-1 ring-brand/15 transition hover:bg-brand-soft md:hidden"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition md:hidden ${
+              solid
+                ? "text-brand-deep ring-1 ring-brand/15 hover:bg-brand-soft"
+                : "text-white ring-1 ring-white/30 hover:bg-white/10"
+            }`}
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
@@ -115,7 +133,7 @@ export function SiteHeader() {
       <div
         id="mobile-nav"
         className={`md:hidden overflow-hidden border-t border-line/70 bg-white transition-[max-height,opacity] duration-300 ${
-          open ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+          open ? "max-h-[28rem] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <nav className="flex flex-col gap-1 px-4 py-3">
